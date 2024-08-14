@@ -1,7 +1,7 @@
 import Link from "next/link";
-export function Navbar() {
+export default function Navbar() {
   return (
-    <nav className="sticky top-0 z-50 mx-auto mt-2 flex h-14 items-center rounded-sm border-black bg-black/95 px-4 text-neutral-200 backdrop-blur supports-[backdrop-filter]:bg-black/90">
+    <nav className="sticky top-0 z-50 mx-auto flex h-20 w-full items-center rounded-b-xl border-black bg-black/95 px-4 text-neutral-200 backdrop-blur supports-[backdrop-filter]:bg-black/90">
       <div className="flex flex-1 items-center">
         <Link href="/" className="me-6 text-2xl font-bold">
           Iconic
