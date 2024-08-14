@@ -13,7 +13,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       </Head>
       <main className="container relative mx-auto flex h-screen flex-col text-neutral-800 antialiased">
         <Navbar />
-        <div className="flex-1">{children}</div>
+        <div className="flex-1 flex-shrink-0">{children}</div>
         <Footer />
       </main>
     </>

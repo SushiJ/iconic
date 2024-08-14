@@ -1,12 +1,25 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 
-export default function Home() {
+function Main() {
+  return (
+    <div className="grid grid-cols-2">
+      <div>
+        <p>Something Something AI here</p>
+      </div>
+      <div>
+        <p>Something Something Photo here</p>
+      </div>
+    </div>
+  );
+}
+
+export default function Index() {
   const hello = api.post.hello.useQuery({ text: "from tRPC" });
 
   return (
     <>
-      <p>Main</p>
+      <Main />
       <p>{hello.data?.greeting}</p>
     </>
   );
