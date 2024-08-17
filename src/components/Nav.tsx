@@ -3,10 +3,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "~/lib/utils";
+import { api } from "~/utils/api";
 
 export default function Navbar() {
   const pathname = usePathname();
   const { data: sessionData } = useSession();
+
+  const { data: credits, isPending } = api.user.getUserCredits.useQuery();
 
   return (
     <nav className="sticky top-0 z-50 mx-auto flex h-20 w-full items-center rounded-b-xl border-black bg-black/95 px-4 text-neutral-200 backdrop-blur supports-[backdrop-filter]:bg-black/90">
@@ -42,6 +45,14 @@ export default function Navbar() {
           </Link>
         </ul>
       </div>
+      <p className="me-2">
+        {/*  TODO: Style this */}
+        {isPending
+          ? "Loading credits..."
+          : credits
+            ? credits + " credits remaining"
+            : ""}
+      </p>
       <p className="me-2">
         {sessionData ? sessionData.user.name?.split(" ")[0] : ""}
       </p>
