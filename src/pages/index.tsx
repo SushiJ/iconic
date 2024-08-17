@@ -14,7 +14,7 @@ function Main() {
 }
 
 export default function Index() {
-  const hello = api.post.hello.useQuery({ text: "from tRPC" });
+  const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
   return (
     <>
