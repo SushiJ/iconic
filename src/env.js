@@ -22,8 +22,10 @@ export const env = createEnv({
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string() : z.string().url(),
     ),
+    OPEN_API_KEY: z.string(),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
+    MOCK_API: z.string(),
   },
 
   /**
@@ -41,7 +43,9 @@ export const env = createEnv({
    */
   runtimeEnv: {
     // DATABASE_URL: process.env.DATABASE_URL,
+    MOCK_API: process.env.MOCK_API,
     NODE_ENV: process.env.NODE_ENV,
+    OPEN_API_KEY: process.env.OPEN_API_KEY,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
