@@ -9,7 +9,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { users } from "~/server/db/schema";
+import { icons, users } from "~/server/db/schema";
 import { env } from "~/env";
 
 import { b64Image } from "~/data/b64";
@@ -54,7 +54,7 @@ export const generateRouter = createTRPCRouter({
 
       const result = await ctx.db
         .update(users)
-        .set({ credits })
+        .set({ credits: credits })
         .where(eq(users.id, ctx.session.user.id));
 
       if (result.rowsAffected <= 0) {
@@ -78,6 +78,11 @@ export const generateRouter = createTRPCRouter({
         base64 = response.data[0]?.b64_json;
       }
 
+      await ctx.db.insert(icons).values({
+        prompt: input.prompt,
+        userId: ctx.session.user.id,
+      });
+
       const response = await s3.send(putObject("xyz.png", base64!));
       if (response.$metadata.httpStatusCode !== 200) {
         throw new TRPCError({
@@ -85,6 +90,7 @@ export const generateRouter = createTRPCRouter({
           message: "Failed to save it to the database",
         });
       }
+
       return {
         imageUrl: base64,
       };
@@ -92,7 +98,7 @@ export const generateRouter = createTRPCRouter({
 
   getIcon: publicProcedure
     .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
+    .query(({ input, ctx }) => {
       return {
         greeting: `Hello ${input.text}`,
       };

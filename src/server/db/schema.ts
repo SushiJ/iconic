@@ -34,6 +34,7 @@ export const users = createTable("user", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  icons: many(icons),
 }));
 
 export const accounts = createTable(
@@ -96,3 +97,27 @@ export const verificationTokens = createTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   }),
 );
+
+export const icons = createTable(
+  "icon",
+  {
+    id: text("id", { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    prompt: text("prompt", { length: 255 }),
+    userId: text("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    createdAt: int("createdAt", {
+      mode: "timestamp",
+    }).default(sql`(CURRENT_TIMESTAMP)`),
+  },
+  (icon) => ({
+    userIdIdx: index("icon_userId_idx").on(icon.userId),
+  }),
+);
+
+export const iconsRelations = relations(icons, ({ one }) => ({
+  user: one(users, { fields: [icons.userId], references: [users.id] }),
+}));
