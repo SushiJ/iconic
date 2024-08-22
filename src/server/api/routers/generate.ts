@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import {
@@ -6,13 +7,17 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
-// color: "red"
-// prompt: "this is the prompt"
-// shape: "circular"
-// style: "claymorphic"
+import OpenAI from "openai";
+import { env } from "~/env";
+import { users } from "~/server/db/schema";
+import { eq } from "drizzle-orm";
+
+const openAi = new OpenAI({
+  apiKey: env.OPEN_API_KEY,
+});
 
 export const generateRouter = createTRPCRouter({
-  generateIcon: publicProcedure
+  generateIcon: protectedProcedure
     .input(
       z.object({
         prompt: z.string().min(10),
@@ -21,16 +26,40 @@ export const generateRouter = createTRPCRouter({
         style: z.string(),
       }),
     )
-    .mutation(({ input }) => {
-      return new Promise<typeof input>((resolve, _) => {
-        setTimeout(
-          () =>
-            resolve({
-              ...input,
-            }),
-          2000,
-        );
+    .mutation(async ({ input, ctx }) => {
+      const user = await ctx.db.query.users.findFirst({
+        where: eq(users.id, ctx.session.user.id),
       });
+      const credits = Math.max(user!.credits! - 1, 0);
+
+      const result = await ctx.db
+        .update(users)
+        .set({ credits })
+        .where(eq(users.id, ctx.session.user.id));
+
+      if (result.rowsAffected <= 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Do not have enough credits",
+        });
+      }
+      // let url;
+      // if (env.MOCK_API === "true") {
+      //   // TODO: b64 image
+      //   url = "";
+      // } else {
+      //   const formPrompt = `generate a modern looking icon for ${input.prompt} with the following attributes color:${input.color}, shape:${input.shape}, style:${input.style}`;
+      //   const response = await openAi.images.generate({
+      //     prompt: formPrompt,
+      //     n: 1,
+      //     size: "512x512",
+      //   });
+      //   url = response.data[0]?.url;
+      // }
+      return {
+        result: result.rowsAffected,
+        // imageUrl: url,
+      };
     }),
 
   getIcon: publicProcedure
@@ -40,28 +69,4 @@ export const generateRouter = createTRPCRouter({
         greeting: `Hello ${input.text}`,
       };
     }),
-
-  create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      return ctx.db.post.create({
-        data: {
-          name: input.name,
-          createdBy: { connect: { id: ctx.session.user.id } },
-        },
-      });
-    }),
-
-  getLatest: protectedProcedure.query(async ({ ctx }) => {
-    const post = await ctx.db.post.findFirst({
-      orderBy: { createdAt: "desc" },
-      where: { createdBy: { id: ctx.session.user.id } },
-    });
-
-    return post ?? null;
-  }),
-
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
-  }),
 });

@@ -16,6 +16,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { useState } from "react";
 
 const COLORS = [
   "red",
@@ -49,6 +50,7 @@ const formSchema = z.object({
 });
 
 export default function Generate() {
+  const [imageUrl, setImageUrl] = useState<string | undefined>("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,7 +58,12 @@ export default function Generate() {
     },
   });
 
-  const { mutate, isPending } = api.generate.generateIcon.useMutation();
+  const { mutate, isPending } = api.generate.generateIcon.useMutation({
+    onSuccess(data) {
+      console.log("done", data);
+      // setImageUrl(data.imageUrl);
+    },
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutate(values);
@@ -64,6 +71,8 @@ export default function Generate() {
 
   return (
     <div className="grid h-full w-full place-items-center">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      {/* {imageUrl ? <img src={imageUrl} /> : null} */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
