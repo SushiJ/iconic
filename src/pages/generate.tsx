@@ -61,7 +61,7 @@ export default function Generate() {
   const { mutate, isPending } = api.generate.generateIcon.useMutation({
     onSuccess(data) {
       console.log("done", data);
-      // setImageUrl(data.imageUrl);
+      setImageUrl(data.imageUrl);
     },
   });
 
@@ -72,7 +72,7 @@ export default function Generate() {
   return (
     <div className="grid h-full w-full place-items-center">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      {/* {imageUrl ? <img src={imageUrl} /> : null} */}
+      {imageUrl ? <img src={"data:image/gif;base64," + imageUrl} /> : null}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
