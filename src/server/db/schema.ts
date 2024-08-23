@@ -109,9 +109,7 @@ export const icons = createTable(
     userId: text("user_id", { length: 255 })
       .notNull()
       .references(() => users.id),
-    createdAt: int("createdAt", {
-      mode: "timestamp",
-    }).default(sql`(CURRENT_TIMESTAMP)`),
+    createdAt: text("createdAt").default(sql`(CURRENT_TIMESTAMP)`),
   },
   (icon) => ({
     userIdIdx: index("icon_userId_idx").on(icon.userId),

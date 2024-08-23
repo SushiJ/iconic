@@ -72,7 +72,7 @@ export default function Generate() {
   return (
     <div className="grid h-full w-full place-items-center">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      {imageUrl ? <img src={"data:image/gif;base64," + imageUrl} /> : null}
+      {imageUrl ? <img src={imageUrl} /> : null}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField

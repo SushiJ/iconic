@@ -65,7 +65,6 @@ export const generateRouter = createTRPCRouter({
       }
       let base64: string | undefined;
       if (env.MOCK_API === "true") {
-        // TODO: b64 image
         base64 = b64Image;
       } else {
         const formPrompt = `generate a modern looking icon for ${input.prompt} with the following attributes color:${input.color}, shape:${input.shape}, style:${input.style}`;
@@ -78,12 +77,16 @@ export const generateRouter = createTRPCRouter({
         base64 = response.data[0]?.b64_json;
       }
 
-      await ctx.db.insert(icons).values({
-        prompt: input.prompt,
-        userId: ctx.session.user.id,
-      });
+      const icon = await ctx.db
+        .insert(icons)
+        .values({
+          prompt: input.prompt,
+          userId: ctx.session.user.id,
+        })
+        .returning();
+      // TODO: handle it fails to save to the db
 
-      const response = await s3.send(putObject("xyz.png", base64!));
+      const response = await s3.send(putObject(icon[0]!.id, base64!));
       if (response.$metadata.httpStatusCode !== 200) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
@@ -92,7 +95,7 @@ export const generateRouter = createTRPCRouter({
       }
 
       return {
-        imageUrl: base64,
+        imageUrl: `https://${env.BUCKET_NAME}.s3.ap-south-1.amazonaws.com/${icon[0]?.id}`,
       };
     }),
 
