@@ -4,10 +4,13 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
+import { Button } from "~/components/ui/button";
+import { useGetCredits } from "~/hooks/useGetCredits";
 
 export default function Navbar() {
   const pathname = usePathname();
   const { data: sessionData } = useSession();
+  const buyCredits = useGetCredits();
 
   const { data: credits, isPending } = api.user.getUserCredits.useQuery();
 
@@ -46,13 +49,18 @@ export default function Navbar() {
         </ul>
       </div>
       <p className="me-2">
-        {/*  TODO: Style this */}
+        {/*  TODO: Style this, and make it so when you're logged in it doesn't show up loading */}
         {isPending
           ? "Loading credits..."
           : credits
             ? credits + " credits remaining"
             : ""}
       </p>
+      {sessionData ? (
+        <Button onClick={() => buyCredits().catch((err) => console.log(err))}>
+          Buy more credits...
+        </Button>
+      ) : null}
       <p className="me-2">
         {sessionData ? sessionData.user.name?.split(" ")[0] : ""}
       </p>

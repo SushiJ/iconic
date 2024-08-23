@@ -22,6 +22,7 @@ export const env = createEnv({
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string() : z.string().url(),
     ),
+    HOST_NAME: z.string(),
     OPEN_API_KEY: z.string(),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
@@ -29,6 +30,9 @@ export const env = createEnv({
     ACCESS_KEY: z.string(),
     SECRET_ACCESS_KEY: z.string(),
     BUCKET_NAME: z.string(),
+    STRIPE_SECRET_KEY: z.string(),
+    STRIPE_PRICE_ID: z.string(),
+    STRIPE_WEBHOOK_SECRET: z.string(),
   },
 
   /**
@@ -38,6 +42,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_STRIPE_KEY: z.string(),
   },
 
   /**
@@ -47,6 +52,8 @@ export const env = createEnv({
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
     MOCK_API: process.env.MOCK_API,
+    HOST_NAME: process.env.HOST_NAME,
+    STRIPE_PRICE_ID: process.env.STRIPE_PRICE_ID,
     NODE_ENV: process.env.NODE_ENV,
     OPEN_API_KEY: process.env.OPEN_API_KEY,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
@@ -56,6 +63,9 @@ export const env = createEnv({
     ACCESS_KEY: process.env.ACCESS_KEY,
     SECRET_ACCESS_KEY: process.env.SECRET_ACCESS_KEY,
     BUCKET_NAME: process.env.BUCKET_NAME,
+    NEXT_PUBLIC_STRIPE_KEY: process.env.NEXT_PUBLIC_STRIPE_KEY,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
