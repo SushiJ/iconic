@@ -1,11 +1,20 @@
 import { signIn, signOut, useSession } from "next-auth/react";
+import { EllipsisVertical } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
-import { Button } from "~/components/ui/button";
 import { useGetCredits } from "~/hooks/useGetCredits";
+
+import { Button } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -15,11 +24,11 @@ export default function Navbar() {
   const { data: credits, isPending } = api.user.getUserCredits.useQuery();
 
   return (
-    <nav className="sticky top-0 z-50 mx-auto flex h-20 w-full items-center rounded-b-xl border-black bg-black/95 px-4 text-neutral-200 backdrop-blur supports-[backdrop-filter]:bg-black/90">
-      <div className="flex flex-1 items-center">
+    <nav className="sticky top-0 z-10 mx-auto mt-4 flex min-h-20 w-full items-center rounded border-4 border-double border-white bg-gray-400 bg-opacity-10 px-4 backdrop-blur">
+      <div className="container flex flex-1 items-center">
         <Link
           href="/"
-          className="me-6 text-2xl font-bold hover:text-neutral-200/80"
+          className="me-6 text-2xl font-bold hover:text-neutral-700/80"
         >
           Iconic
         </Link>
@@ -27,10 +36,8 @@ export default function Navbar() {
           <Link
             href="/community"
             className={cn(
-              "transition-colors hover:text-neutral-200/80",
-              pathname === "/community"
-                ? "text-neutral-200"
-                : "text-neutral-200/60",
+              "transition-colors hover:text-neutral-500/80",
+              pathname === "/community" ? "text-black" : "text-black/65",
             )}
           >
             community
@@ -38,10 +45,8 @@ export default function Navbar() {
           <Link
             href="/generate"
             className={cn(
-              "transition-colors hover:text-neutral-200/80",
-              pathname === "/generate"
-                ? "text-neutral-200"
-                : "text-neutral-200/60",
+              "transition-colors hover:text-neutral-500/80",
+              pathname === "/generate" ? "text-black" : "text-black/65",
             )}
           >
             generate
@@ -50,28 +55,55 @@ export default function Navbar() {
       </div>
       <p className="me-2">
         {/*  TODO: Style this, and make it so when you're logged in it doesn't show up loading */}
-        {isPending
-          ? "Loading credits..."
-          : credits
-            ? credits + " credits remaining"
-            : ""}
+        {sessionData
+          ? isPending
+            ? "Loading credits..."
+            : `${credits} credits remaining`
+          : ""}
       </p>
       {sessionData ? (
-        <Button onClick={() => buyCredits().catch((err) => console.log(err))}>
-          Buy more credits...
+        <Button
+          onClick={() => buyCredits().catch((err) => console.log(err))}
+          className="mx-1 text-black/80"
+          variant="outline"
+        >
+          Buy credits
         </Button>
       ) : null}
-      <p className="me-2">
-        {sessionData ? sessionData.user.name?.split(" ")[0] : ""}
-      </p>
-      <div>
-        <button
-          className="rounded-full bg-white/10 px-10 py-3 font-semibold text-black no-underline transition hover:bg-white/20"
-          onClick={sessionData ? () => void signOut() : () => void signIn()}
-        >
-          {sessionData ? "Sign out" : "Sign in"}
-        </button>
-      </div>
+      {sessionData ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+              <EllipsisVertical />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            className="z-20 w-56 border-4 border-double border-white bg-neutral-50 bg-opacity-5 font-sans backdrop-blur"
+            alignOffset={-20}
+            sideOffset={20}
+          >
+            <DropdownMenuItem className="hover:cursor-pointer">
+              {/* TODO: Add profile screen perhaps? */}
+              {sessionData ? sessionData.user.name?.split(" ")[0] : ""}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="hover:cursor-pointer">
+              Generated Icons
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="hover:cursor-pointer"
+              onClick={sessionData ? () => void signOut() : () => void signIn()}
+            >
+              {sessionData ? "Sign out" : ""}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <Button onClick={() => void signIn()} variant="outline">
+          Sign In
+        </Button>
+      )}
     </nav>
   );
 }

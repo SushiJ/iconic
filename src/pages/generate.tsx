@@ -70,127 +70,132 @@ export default function Generate() {
   }
 
   return (
-    <div className="grid h-full w-full place-items-center">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
+    <>
       {imageUrl ? <img src={imageUrl} /> : null}
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="prompt"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  1. Describe what your icon should look like
-                </FormLabel>
-                <FormControl>
-                  <Input placeholder="Prompt here..." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="color"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>2. Pick an icon color</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex space-x-1"
-                  >
-                    {/* COLORS */}
-                    {COLORS.map((c) => (
-                      <FormItem
-                        key={c}
-                        className="flex items-center space-x-3 space-y-0"
-                      >
-                        <FormControl>
-                          <RadioGroupItem value={c} />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {c.slice(0, 1).toUpperCase() + c.slice(1)}
-                        </FormLabel>
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="shape"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>3. Pick an icon shape</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex space-x-1"
-                  >
-                    {/* SHAPES */}
-                    {SHAPES.map((s) => (
-                      <FormItem
-                        key={s}
-                        className="flex items-center space-x-3 space-y-0"
-                      >
-                        <FormControl>
-                          <RadioGroupItem value={s} />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {s.slice(0, 1).toUpperCase() + s.slice(1)}
-                        </FormLabel>
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="style"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>4. Pick an icon style</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex space-x-1"
-                  >
-                    {/* STYLES */}
-                    {STYLES.map((style) => (
-                      <FormItem
-                        key={style}
-                        className="flex items-center space-x-3 space-y-0"
-                      >
-                        <FormControl>
-                          <RadioGroupItem value={style} />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {style.slice(0, 1).toUpperCase() + style.slice(1)}
-                        </FormLabel>
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" disabled={isPending}>
-            Submit
-          </Button>
-        </form>
-      </Form>
-    </div>
+      <div className="grid h-full w-full place-items-center">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8 bg-gray-100 bg-opacity-5 p-4 backdrop-blur"
+          >
+            <FormField
+              control={form.control}
+              name="prompt"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    1. Describe what your icon should look like
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Prompt here..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="color"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>2. Pick an icon color</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex space-x-1"
+                    >
+                      {/* COLORS */}
+                      {COLORS.map((c) => (
+                        <FormItem
+                          key={c}
+                          className="flex items-center space-x-3 space-y-0"
+                        >
+                          <FormControl>
+                            <RadioGroupItem value={c} />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            {c.slice(0, 1).toUpperCase() + c.slice(1)}
+                          </FormLabel>
+                        </FormItem>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="shape"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>3. Pick an icon shape</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex space-x-1"
+                    >
+                      {/* SHAPES */}
+                      {SHAPES.map((s) => (
+                        <FormItem
+                          key={s}
+                          className="flex items-center space-x-3 space-y-0"
+                        >
+                          <FormControl>
+                            <RadioGroupItem value={s} />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            {s.slice(0, 1).toUpperCase() + s.slice(1)}
+                          </FormLabel>
+                        </FormItem>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="style"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>4. Pick an icon style</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex space-x-1"
+                    >
+                      {/* STYLES */}
+                      {STYLES.map((style) => (
+                        <FormItem
+                          key={style}
+                          className="flex items-center space-x-3 space-y-0"
+                        >
+                          <FormControl>
+                            <RadioGroupItem value={style} />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            {style.slice(0, 1).toUpperCase() + style.slice(1)}
+                          </FormLabel>
+                        </FormItem>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" disabled={isPending}>
+              Submit
+            </Button>
+          </form>
+        </Form>
+      </div>
+    </>
   );
 }
