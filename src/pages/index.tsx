@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 export default function Index() {
   const router = useRouter();
   const { data: sessionData } = useSession();
+
   function handleClick() {
     if (sessionData && sessionData.user) {
       router.push("/generate");
