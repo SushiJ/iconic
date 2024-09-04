@@ -20,7 +20,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const { data: sessionData } = useSession();
   const buyCredits = useGetCredits();
-
   const { data: credits, isPending } = api.user.getUserCredits.useQuery();
 
   return (
@@ -84,8 +83,9 @@ export default function Navbar() {
             sideOffset={20}
           >
             <DropdownMenuItem className="hover:cursor-pointer">
-              {/* TODO: Add profile screen perhaps? */}
-              {sessionData ? sessionData.user.name?.split(" ")[0] : ""}
+              <Link href="/profile">
+                {sessionData ? sessionData.user.name?.split(" ")[0] : ""}
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="hover:cursor-pointer">
