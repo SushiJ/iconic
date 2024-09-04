@@ -17,6 +17,8 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { signIn, useSession } from "next-auth/react";
+import NotAuthenticated from "~/components/NotAuthenticated";
 
 const COLORS = [
   "red",
@@ -50,6 +52,7 @@ const formSchema = z.object({
 });
 
 export default function Generate() {
+  const { status } = useSession();
   const [imageUrl, setImageUrl] = useState<string | undefined>("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,16 +67,15 @@ export default function Generate() {
       setImageUrl(data.imageUrl);
     },
   });
-
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutate(values);
   }
 
+  if (status === "unauthenticated") return <NotAuthenticated />;
+
   return (
     <>
-      {imageUrl ? <img src={imageUrl} /> : null}
       <div className="grid h-full w-full place-items-center">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -190,11 +192,22 @@ export default function Generate() {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isPending}>
-              Submit
-            </Button>
+            {status === "authenticated" ? (
+              <Button type="submit" disabled={isPending}>
+                Submit
+              </Button>
+            ) : (
+              <Button
+                onClick={() => void signIn()}
+                variant="link"
+                type="button"
+              >
+                Sign In
+              </Button>
+            )}
           </form>
         </Form>
+        {imageUrl ? <img src={imageUrl} /> : null}
       </div>
     </>
   );
