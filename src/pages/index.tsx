@@ -16,7 +16,7 @@ export default function Index() {
   }
   return (
     <>
-      <div className="my-auto grid h-full grid-cols-2 place-items-center">
+      <div className="my-auto grid h-full grid-cols-2 place-items-center px-1">
         <div className="space-y-6">
           <h1 className="text-6xl leading-tight">
             Generate icons with the help of AI
@@ -29,16 +29,14 @@ export default function Index() {
             Get started
           </Button>
         </div>
-        <div>
-          <img
-            src="./hero_image_white.jpg"
-            style={{
-              transform: "scaleX(-1)",
-              width: "250",
-              height: "250",
-            }}
-          />
-        </div>
+        <img
+          src="./hero_image_white.jpg"
+          style={{
+            transform: "scaleX(-1)",
+            width: "250",
+            height: "250",
+          }}
+        />
       </div>
     </>
   );
