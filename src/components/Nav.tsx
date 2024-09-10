@@ -83,7 +83,7 @@ export default function Navbar() {
             sideOffset={20}
           >
             <DropdownMenuItem className="hover:cursor-pointer">
-              <Link href="/profile">
+              <Link href="/profile" className="w-full">
                 {sessionData ? sessionData.user.name?.split(" ")[0] : ""}
               </Link>
             </DropdownMenuItem>
