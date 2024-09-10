@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { signIn, useSession } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import {
   Form,
@@ -17,8 +17,11 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import { signIn, useSession } from "next-auth/react";
 import NotAuthenticated from "~/components/NotAuthenticated";
+import { Skeleton } from "~/components/ui/skeleton";
+
+import { api } from "~/utils/api";
+import { useDelay } from "~/hooks/useDelay";
 
 const COLORS = [
   "red",
@@ -53,6 +56,7 @@ const formSchema = z.object({
 
 export default function Generate() {
   const { status } = useSession();
+  const delay = useDelay(1000);
   const [imageUrl, setImageUrl] = useState<string | undefined>("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -67,9 +71,49 @@ export default function Generate() {
       setImageUrl(data.imageUrl);
     },
   });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutate(values);
   }
+
+  if (status === "loading" || delay)
+    return (
+      <div className="grid h-full place-items-center">
+        <div className="my-auto w-[800px] bg-gray-100 bg-opacity-5 p-4 backdrop-blur">
+          <div className="space-y-12">
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-[310px]" />
+              <Skeleton className="h-3 w-full" />
+            </div>
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-[180px]" />
+              <div className="flex w-full justify-between space-x-3">
+                {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map(() => (
+                  <Skeleton className="h-3 w-12" />
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-[180px]" />
+              <div className="flex w-full space-x-3">
+                {[1, 1, 1].map(() => (
+                  <Skeleton className="h-3 w-24" />
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-[180px]" />
+              <div className="flex w-full space-x-3">
+                {[1, 1, 1].map(() => (
+                  <Skeleton className="h-3 w-28" />
+                ))}
+              </div>
+            </div>
+            <Skeleton className="h-8 w-16" />
+          </div>
+        </div>
+      </div>
+    );
 
   if (status === "unauthenticated") return <NotAuthenticated />;
 
