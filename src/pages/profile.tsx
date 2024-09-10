@@ -23,7 +23,7 @@ export default function Profile() {
   const { data: userInfo } = api.user.getUserInfo.useQuery();
   const delay = useDelay(1000);
 
-  if (status === "authenticated" || delay) {
+  if (status === "loading" || delay) {
     return (
       <div className="grid grid-cols-4 gap-2 p-2">
         <Card className="col-span-1 h-40">
