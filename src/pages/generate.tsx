@@ -40,9 +40,13 @@ const SHAPES = ["rectangular", "circular", "rounded"] as const;
 const STYLES = ["claymorphic", "3d", "pixelated", "illustrated"] as const;
 
 const formSchema = z.object({
-  prompt: z.string({}).min(10, {
-    message: "Prompt is required",
-  }),
+  prompt: z
+    .string({
+      required_error: "Prompt is required",
+    })
+    .min(10, {
+      message: "minimum should be 10 characters",
+    }),
   color: z.enum(COLORS, {
     required_error: "Need to select a color.",
   }),
@@ -52,27 +56,42 @@ const formSchema = z.object({
   style: z.enum(STYLES, {
     required_error: "Need to select a style.",
   }),
+  numberIcons: z.preprocess(
+    (value) => {
+      if (typeof value === "string") {
+        const parsed = parseFloat(value);
+        return isNaN(parsed) ? undefined : parsed;
+      }
+      return value;
+    },
+    z.number().min(1).max(5, {
+      message: "max limit is 5",
+    }),
+  ),
 });
 
 export default function Generate() {
   const { status } = useSession();
   const delay = useDelay(1000);
-  const [imageUrl, setImageUrl] = useState<string | undefined>("");
+  const [imageUrl, setImageUrl] = useState<Array<{ imageUrl: string }>>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       prompt: "",
+      numberIcons: 1,
     },
   });
+  const utils = api.useUtils();
 
   const { mutate, isPending } = api.generate.generateIcon.useMutation({
     onSuccess(data) {
-      console.log("done", data);
-      setImageUrl(data.imageUrl);
+      setImageUrl(data);
+      utils.user.invalidate();
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
     mutate(values);
   }
 
@@ -88,24 +107,24 @@ export default function Generate() {
             <div className="space-y-2">
               <Skeleton className="h-3 w-[180px]" />
               <div className="flex w-full justify-between space-x-3">
-                {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map(() => (
-                  <Skeleton className="h-3 w-12" />
+                {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((_, idx) => (
+                  <Skeleton className="h-3 w-12" key={idx} />
                 ))}
               </div>
             </div>
             <div className="space-y-2">
               <Skeleton className="h-3 w-[180px]" />
               <div className="flex w-full space-x-3">
-                {[1, 1, 1].map(() => (
-                  <Skeleton className="h-3 w-24" />
+                {[1, 1, 1].map((_, idx) => (
+                  <Skeleton className="h-3 w-24" key={idx} />
                 ))}
               </div>
             </div>
             <div className="space-y-2">
               <Skeleton className="h-3 w-[180px]" />
               <div className="flex w-full space-x-3">
-                {[1, 1, 1].map(() => (
-                  <Skeleton className="h-3 w-28" />
+                {[1, 1, 1].map((_, idx) => (
+                  <Skeleton className="h-3 w-28" key={idx} />
                 ))}
               </div>
             </div>
@@ -236,6 +255,26 @@ export default function Generate() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="numberIcons"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    5. Number of icons{" "}
+                    <span className="text-gray-500/75">(max. 5)</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      defaultValue={field.value}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {status === "authenticated" ? (
               <Button type="submit" disabled={isPending}>
                 Submit
@@ -251,7 +290,11 @@ export default function Generate() {
             )}
           </form>
         </Form>
-        {imageUrl ? <img src={imageUrl} /> : null}
+        <div className="flex gap-1">
+          {imageUrl.length > 0
+            ? imageUrl.map((url, idx) => <img src={url.imageUrl} key={idx} />)
+            : null}
+        </div>
       </div>
     </>
   );
