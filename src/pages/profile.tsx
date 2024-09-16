@@ -118,14 +118,14 @@ export default function Profile() {
                       <Badge variant="secondary" className="font-normal">
                         {icon.createdAt
                           ? new Date(
-                              icon.createdAt.split(" ").join("T"),
-                            ).toLocaleString("en-IN", {
-                              day: "numeric",
-                              month: "short",
-                              year: "2-digit",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })
+                            icon.createdAt.split(" ").join("T"),
+                          ).toLocaleString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                            year: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
                           : ""}
                       </Badge>
                     </div>
