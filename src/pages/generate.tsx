@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { signIn, useSession } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { CheckIcon, ClipboardIcon, Download, View } from "lucide-react";
 
-import { Button } from "~/components/ui/button";
+import { api } from "~/utils/api";
+import { useDelay } from "~/hooks/useDelay";
+
 import {
   Form,
   FormControl,
@@ -15,13 +19,16 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
+import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import NotAuthenticated from "~/components/NotAuthenticated";
 import { Skeleton } from "~/components/ui/skeleton";
-
-import { api } from "~/utils/api";
-import { useDelay } from "~/hooks/useDelay";
+import NotAuthenticated from "~/components/NotAuthenticated";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 
 const COLORS = [
   "red",
@@ -72,7 +79,7 @@ const formSchema = z.object({
 
 export default function Generate() {
   const { status } = useSession();
-  const delay = useDelay(1000);
+  const delay = useDelay(500);
   const [imageUrl, setImageUrl] = useState<Array<{ imageUrl: string }>>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -102,7 +109,7 @@ export default function Generate() {
           <div className="space-y-12">
             <div className="space-y-2">
               <Skeleton className="h-3 w-[310px]" />
-              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-[500px]" />
             </div>
             <div className="space-y-2">
               <Skeleton className="h-3 w-[180px]" />
@@ -127,6 +134,10 @@ export default function Generate() {
                   <Skeleton className="h-3 w-28" key={idx} />
                 ))}
               </div>
+            </div>
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-[250px]" />
+              <Skeleton className="h-3 w-[500px]" />
             </div>
             <Skeleton className="h-8 w-16" />
           </div>
@@ -290,12 +301,76 @@ export default function Generate() {
             )}
           </form>
         </Form>
-        <div className="flex gap-1">
-          {imageUrl.length > 0
-            ? imageUrl.map((url, idx) => <img src={url.imageUrl} key={idx} />)
-            : null}
-        </div>
+        {imageUrl.length > 0 ? (
+          <>
+            <div className="grid grid-cols-3 gap-1">
+              {imageUrl.map((u, idx) => (
+                <Popover key={idx}>
+                  <PopoverTrigger>
+                    <img src={u.imageUrl} />
+                  </PopoverTrigger>
+                  <PopoverContent
+                    side="top"
+                    className="rounded border-4 border-double border-white bg-gray-400 bg-opacity-10 px-4 backdrop-blur"
+                  >
+                    <DownloadImageComponent url={u.imageUrl} />
+                  </PopoverContent>
+                </Popover>
+              ))}
+            </div>
+          </>
+        ) : null}
       </div>
     </>
+  );
+}
+
+function DownloadImageComponent(props: { url: string }): React.ReactNode {
+  const [hasCopied, setHasCopied] = useState<boolean>(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setHasCopied(false);
+    }, 2000);
+  }, [hasCopied]);
+
+  async function toDataURL(url: string) {
+    const blob = await fetch(url).then((res) => res.blob());
+    return URL.createObjectURL(blob);
+  }
+
+  // hacky way to download image
+  const download = async (url: string) => {
+    const a = document.createElement("a");
+    a.href = await toDataURL(url);
+    a.download = `${url.split("/")[3]}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  function copyToClipboard(url: string) {
+    navigator.clipboard.writeText(url);
+  }
+
+  const copy = useCallback((value: string) => {
+    copyToClipboard(value);
+    setHasCopied(true);
+  }, []);
+
+  return (
+    <div className="flex justify-around">
+      <Button variant="outline" onClick={() => download(props.url)}>
+        <Download size="18" />
+      </Button>
+      <Link href={props.url} rel="noopener noreferrer" target="_blank">
+        <Button variant="outline">
+          <View size="18" />
+        </Button>
+      </Link>
+      <Button variant="outline" onClick={() => copy(props.url)}>
+        {hasCopied ? <CheckIcon size="18" /> : <ClipboardIcon size="18" />}
+      </Button>
+    </div>
   );
 }
