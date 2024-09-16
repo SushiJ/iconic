@@ -16,7 +16,7 @@ export const userRouter = createTRPCRouter({
     });
     const userIcons = await ctx.db.query.icons.findMany({
       where: eq(icons.userId, ctx.session.user.id),
-      limit: 10,
+      limit: 15,
       orderBy: desc(icons.createdAt),
     });
     return {
