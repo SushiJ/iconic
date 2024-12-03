@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { signIn, useSession } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,6 +28,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import { DownloadImageComponent } from "~/components/Download";
 
 const COLORS = [
   "red",
@@ -303,7 +303,7 @@ export default function Generate() {
         </Form>
         {imageUrl.length > 0 ? (
           <>
-            <div className="grid grid-cols-3 gap-1">
+            <div className="mt-2 grid grid-cols-3 gap-1">
               {imageUrl.map((u, idx) => (
                 <Popover key={idx}>
                   <PopoverTrigger>
@@ -313,7 +313,7 @@ export default function Generate() {
                     side="top"
                     className="rounded border-4 border-double border-white bg-gray-400 bg-opacity-10 px-4 backdrop-blur"
                   >
-                    <DownloadImageComponent url={u.imageUrl} />
+                    <DownloadImageComponent url={u.imageUrl} src="" />
                   </PopoverContent>
                 </Popover>
               ))}
@@ -322,55 +322,5 @@ export default function Generate() {
         ) : null}
       </div>
     </>
-  );
-}
-
-function DownloadImageComponent(props: { url: string }): React.ReactNode {
-  const [hasCopied, setHasCopied] = useState<boolean>(false);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setHasCopied(false);
-    }, 2000);
-  }, [hasCopied]);
-
-  async function toDataURL(url: string) {
-    const blob = await fetch(url).then((res) => res.blob());
-    return URL.createObjectURL(blob);
-  }
-
-  // hacky way to download image
-  const download = async (url: string) => {
-    const a = document.createElement("a");
-    a.href = await toDataURL(url);
-    a.download = `${url.split("/")[3]}.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
-  function copyToClipboard(url: string) {
-    navigator.clipboard.writeText(url);
-  }
-
-  const copy = useCallback((value: string) => {
-    copyToClipboard(value);
-    setHasCopied(true);
-  }, []);
-
-  return (
-    <div className="flex justify-around">
-      <Button variant="outline" onClick={() => download(props.url)}>
-        <Download size="18" />
-      </Button>
-      <Link href={props.url} rel="noopener noreferrer" target="_blank">
-        <Button variant="outline">
-          <View size="18" />
-        </Button>
-      </Link>
-      <Button variant="outline" onClick={() => copy(props.url)}>
-        {hasCopied ? <CheckIcon size="18" /> : <ClipboardIcon size="18" />}
-      </Button>
-    </div>
   );
 }

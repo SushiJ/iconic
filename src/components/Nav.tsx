@@ -89,7 +89,9 @@ export default function Navbar() {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="hover:cursor-pointer">
-              Generated Icons
+              <Link href="/icons" className="w-full">
+                Generated Icons
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
               className="hover:cursor-pointer"
