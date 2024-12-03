@@ -25,7 +25,7 @@ export default function Profile() {
 
   if (status === "loading" || delay) {
     return (
-      <div className="grid grid-cols-4 gap-2 p-2">
+      <div className="grid gap-2 p-2 xl:grid-cols-4">
         <Card className="col-span-1 h-40">
           <CardHeader className="flex flex-row items-center gap-2">
             <Avatar>
@@ -43,7 +43,7 @@ export default function Profile() {
             <Skeleton className="h-4 w-[100px]" />
           </CardContent>
         </Card>
-        <section className="col-span-3">
+        <section className="xl:col-span-3">
           <Card>
             <CardHeader>
               <Skeleton className="h-3 w-[80px]" />
@@ -72,7 +72,7 @@ export default function Profile() {
 
   return (
     <>
-      <div className="grid grid-cols-4 gap-2 p-2">
+      <div className="grid gap-2 p-2 xl:grid-cols-4">
         <Card className="col-span-1 h-40">
           <CardHeader className="flex flex-row items-center gap-2">
             <Avatar>
@@ -92,7 +92,7 @@ export default function Profile() {
             <p>Credits: {userInfo?.user?.credits}</p>
           </CardContent>
         </Card>
-        <section className="col-span-3 mx-auto">
+        <section className="mx-auto xl:col-span-3">
           <Card>
             <CardHeader>
               <CardTitle>History</CardTitle>
