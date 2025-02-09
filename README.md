@@ -1,29 +1,60 @@
-# Create T3 App
+# Iconic
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Iconic is a cutting-edge SaaS application that leverages AI to generate high-quality, custom icons for your business. Powered by OpenAI's advanced language models, it streamlines the design process, allowing you to create unique and professional icons effortlessly. Whether you're building a brand, designing a website, or enhancing your product's visuals, Iconic delivers intelligent and stylish iconography in seconds.
 
-## What's next? How do I make an app with this?
+## Features
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- **User Authentication**: Secure user login and registration.
+- **Responsive Design**: Optimized for various devices and screen sizes.
+- **Database Integration**: Efficient data management with Drizzle ORM.
+- **Styling**: Consistent and customizable UI using Tailwind CSS.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Technologies Used
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- **Next.js**: React framework for server-side rendering and static site generation.
+- **NextAuth.js**: Authentication for Next.js applications.
+- **Drizzle ORM**: TypeScript ORM for SQL databases.
+- **Tailwind CSS**: Utility-first CSS framework for styling.
 
-## Learn More
+## Getting Started
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+To set up the project locally:
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/SushiJ/iconic.git
+   cd iconic
+   ```
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+2. **Install dependencies**:
+   ```bash
+   pnpm install
+   ```
 
-## How do I deploy this?
+3. **Configure environment variables**:
+   - Duplicate `.env.example` and rename it to `.env`.
+   - Fill in the necessary environment variables in the `.env` file.
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+4. **Run the development server**:
+   ```bash
+   pnpm dev
+   ```
+   Access the application at `http://localhost:3000`.
+
+## Project Structure
+
+- **`/src`**: Contains the main application code.
+  - **`/pages`**: Next.js pages.
+  - **`/components`**: Reusable UI components.
+  - **`/styles`**: Global and component-specific styles.
+  - **`/utils`**: Utility functions and helpers.
+
+- **`/public`**: Static assets like images and icons.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/SushiJ/iconic/blob/main/LICENSE) file for more details.
+
+---
+
+*Note: This project was bootstrapped with [Create T3 App](https://create.t3.gg/), providing a solid foundation for building full-stack applications with Next.js.*
