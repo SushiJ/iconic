@@ -51,6 +51,11 @@ To set up the project locally:
 
 - **`/public`**: Static assets like images and icons.
 
+## Images
+Home ![Home](/iconic/landing.png)
+Generate ![Generate](/iconic/generate.png)
+Community ![Community](/iconic/community.png)
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/SushiJ/iconic/blob/main/LICENSE) file for more details.
